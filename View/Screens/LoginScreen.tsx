@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import * as Google from "expo-google-app-auth";
 import firebase from "firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const isUserEqual = (googleUser: any, firebaseUser: any) => {
   if (firebaseUser) {
@@ -78,9 +79,13 @@ const signInWithGoogleAsync = async () => {
 };
 
 const LoginScreen = () => {
+  const [user, userLoading, userError] = useAuthState(firebase.auth());
+
   return (
     <View style={styles.container}>
       <Button title={"Sign In With Google"} onPress={signInWithGoogleAsync} />
+      <Text>{user ? user.email : "none"}</Text>
+      <Button title={"Log Out"} onPress={() => firebase.auth().signOut()} />
     </View>
   );
 };
@@ -90,7 +95,7 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center",
   },
 });
